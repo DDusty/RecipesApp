@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
      */
     fun setFragment(account: FirebaseUser?) {
         val fragment = HomeFragment()
-        fragment.account = account
+//        fragment.account = account
 
         setContentView(R.layout.activity_main)
         supportActionBar?.show()
