@@ -99,9 +99,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun clickYes(recipe: Recipe.Result, acc: FirebaseUser) {
-        // add recipe to list in firebase
-        database.child("users").child(acc.uid).child("recipeList").push().setValue(recipe)
-
+        // add recipe to list in firebase with the id as the key
+        database.child("users").child(acc.uid).child("recipeList").child(recipe.id.toString()).setValue(recipe)
         Toast.makeText(this.requireContext(), "Added to list", Toast.LENGTH_SHORT).show()
         getNewRandomRecipe()
     }
@@ -115,7 +114,6 @@ class HomeFragment : Fragment() {
 
         homeViewModel.recipe.observe(viewLifecycleOwner, Observer {
             randomRecipe = it.results[0] // 0 because it has always 1 return, so the first item of the list
-
             setView()
         })
     }

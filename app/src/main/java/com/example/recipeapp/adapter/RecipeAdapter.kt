@@ -8,13 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.recipeapp.R
 import com.example.recipeapp.model.Recipe
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.recipe_card.view.*
 
-
 class RecipeAdapter(
-    private val recipes: List<Recipe.Result>,
+    private val recipes: MutableList<Recipe.Result>,
     private val onClickListener: (View, Recipe.Result) -> Unit
 ) : RecyclerView.Adapter<RecipeAdapter.ViewHolder>() {
+    private lateinit var database: DatabaseReference
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -32,6 +34,16 @@ class RecipeAdapter(
         holder.itemView.setOnClickListener { view ->
             onClickListener.invoke(view, recipes[position])
         }
+    }
+
+    fun removeAt(position: Int, id: String) {
+        database = FirebaseDatabase.getInstance().reference
+
+        val recipe = recipes[position]
+        recipes.removeAt(position)
+        notifyItemRemoved(position)
+        
+        database.root.child("users").child(id).child("recipeList").child(recipe.id.toString()).setValue(null)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

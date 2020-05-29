@@ -5,15 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SimpleAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recipeapp.R
+import com.example.recipeapp.SwipeToDeleteCallback
 import com.example.recipeapp.adapter.RecipeAdapter
 import com.example.recipeapp.data.database.DatabaseViewModel
 import com.example.recipeapp.data.database.OnGetDataListener
@@ -51,6 +54,15 @@ class ListFragment : Fragment() {
         rvList.layoutManager =
             LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         rvList.adapter = recipeAdapter
+
+        val swipeHandler = object : SwipeToDeleteCallback(this.requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = rvList.adapter as RecipeAdapter
+                adapter.removeAt(viewHolder.adapterPosition, account!!.uid)
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(rvList)
 
         auth = FirebaseAuth.getInstance()
         account = auth.currentUser
