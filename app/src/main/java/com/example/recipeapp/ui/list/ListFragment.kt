@@ -22,6 +22,7 @@ import com.example.recipeapp.data.database.DatabaseViewModel
 import com.example.recipeapp.data.database.OnGetDataListener
 import com.example.recipeapp.model.Recipe
 import com.example.recipeapp.model.User
+import com.example.recipeapp.ui.home.recipe.RecipeFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -106,7 +107,17 @@ class ListFragment : Fragment() {
 
     }
 
-    private fun clickRecipe(view: View, recipe: Recipe.Result) {
-        Toast.makeText(this.requireContext(), "clicked on ${recipe.title}", Toast.LENGTH_SHORT).show()
+    private fun clickRecipe(recipe: Recipe.Result) {
+        // this starts the transaction
+        val transaction = fragmentManager!!.beginTransaction()
+        val recipeFragment = RecipeFragment()
+
+        // set the selectedRecipe variable to recipe
+        recipeFragment.selectedRecipe = recipe
+
+        // replace the fragment
+        transaction.replace(R.id.nav_host_fragment, recipeFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 }

@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.recipe_card.view.*
 
 class RecipeAdapter(
     private val recipes: MutableList<Recipe.Result>,
-    private val onClickListener: (View, Recipe.Result) -> Unit
+    private val onClickListener: (Recipe.Result) -> Unit
 ) : RecyclerView.Adapter<RecipeAdapter.ViewHolder>() {
     private lateinit var database: DatabaseReference
 
@@ -32,7 +32,7 @@ class RecipeAdapter(
         holder.bind(recipes[position])
 
         holder.itemView.setOnClickListener { view ->
-            onClickListener.invoke(view, recipes[position])
+            onClickListener.invoke(recipes[position])
         }
     }
 

@@ -1,6 +1,8 @@
 package com.example.recipeapp.ui.home
 
+import android.graphics.Paint
 import android.os.Bundle
+import android.text.Html
 import android.transition.Slide
 import android.transition.TransitionManager
 import android.util.Log
@@ -37,15 +39,6 @@ class HomeFragment : Fragment() {
     var randomRecipe: Recipe.Result? = null
     private lateinit var auth: FirebaseAuth
 
-    /**
-     * set al the viarables of the view, so that it can be used in functions outside oncreateview
-     */
-    private var txt_title: TextView? = null
-    private var txt_time: TextView? = null
-    private var txt_allergies: TextView? = null
-    private var txt_typeDish: TextView? = null
-    private var iv_recipe: ImageView? = null
-
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -55,41 +48,19 @@ class HomeFragment : Fragment() {
                 ViewModelProviders.of(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // set al the variables to the xml field
-        txt_title = root.txt_title
-        txt_time = root.txt_time
-        txt_allergies = root.txt_allergies
-        txt_typeDish = root.txt_typedish
-        iv_recipe = root.iv_recipe_home
-
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         databaseViewModel = ViewModelProviders.of(this).get(DatabaseViewModel::class.java)
 
         account = auth.currentUser
 
-        root.animation_view_product.visibility = View.VISIBLE
+        root.animation_view_recipe.visibility = View.VISIBLE
         root.linear_layout.visibility = View.GONE
 
         if (randomRecipe == null) {
             getNewRandomRecipe()
         } else {
             setView()
-        }
-
-        root.animation_view_product.visibility = View.GONE
-        root.linear_layout.visibility = View.VISIBLE
-
-        root.btn_no.setOnClickListener {
-            clickNo()
-        }
-
-        root.btn_yes.setOnClickListener {
-            clickYes(randomRecipe!!, account!!)
-        }
-
-        root.iv_recipe_home.setOnClickListener {
-            clickRecipe(randomRecipe!!)
         }
 
         root.setOnTouchListener(object: OnSwipeTouchListener() {
@@ -104,29 +75,17 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun clickRecipe(recipe: Recipe.Result) {
-        // this starts the transaction
-        val transaction = fragmentManager!!.beginTransaction()
-        val recipeFragment = RecipeFragment()
-
-        // set the selectedRecipe variable to recipe
-        recipeFragment.selectedRecipe = recipe
-
-        // replace the fragment
-        transaction.replace(R.id.nav_host_fragment, recipeFragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
     private fun clickYes(recipe: Recipe.Result, acc: FirebaseUser) {
         // add recipe to list in firebase with the id as the key
         database.child("users").child(acc.uid).child("recipeList").child(recipe.id.toString()).setValue(recipe)
         Toast.makeText(this.requireContext(), "Added to list", Toast.LENGTH_SHORT).show()
         getNewRandomRecipe()
+        showLessInfo()
     }
 
     private fun clickNo() {
         getNewRandomRecipe()
+        showLessInfo()
     }
 
     private fun getNewRandomRecipe() {
@@ -142,9 +101,24 @@ class HomeFragment : Fragment() {
      * Populates the view
      */
     private fun setView() {
+        animation_view_recipe.visibility = View.GONE
+        linear_layout.visibility = View.VISIBLE
+
+        btn_no.setOnClickListener {
+            clickNo()
+        }
+
+        btn_yes.setOnClickListener {
+            clickYes(randomRecipe!!, account!!)
+        }
+
+        txt_showMore.setOnClickListener {
+            showExtraInfo()
+        }
+
         Glide.with(this)
             .load(randomRecipe!!.imageUrl)
-            .into(iv_recipe!!)
+            .into(iv_recipe_home!!)
         txt_title!!.text = randomRecipe!!.title
         txt_time!!.text = randomRecipe!!.readyInMinutes.toString()
 
@@ -159,7 +133,41 @@ class HomeFragment : Fragment() {
         }
 
         txt_allergies!!.text = dietString
-        txt_typeDish!!.text = typeDishString
+        txt_typedish!!.text = typeDishString
 
+        // sets the underline of the textview
+        txt_showMore.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+    }
+
+    private fun showExtraInfo() {
+        txt_showMore.visibility = View.GONE
+        extra_info.visibility = View.VISIBLE
+
+        txt_showLess.setOnClickListener {
+            showLessInfo()
+        }
+
+        // sets the underline of the textview
+        txt_showLess.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+
+        var ingredientsString = ""
+        for (ingredient in randomRecipe!!.Ingredients) {
+            ingredientsString += "${ingredient.name} + \n"
+        }
+
+        txt_ingredients_home.text = ingredientsString
+
+        // makes the textview take html body
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            txt_intructions_home.text = Html.fromHtml(randomRecipe!!.intructions, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            txt_intructions_home.text = Html.fromHtml(randomRecipe!!.intructions)
+        }
+
+    }
+
+    private fun showLessInfo() {
+        extra_info.visibility = View.GONE
+        txt_showMore.visibility = View.VISIBLE
     }
 }
