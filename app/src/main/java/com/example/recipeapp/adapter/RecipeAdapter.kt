@@ -36,7 +36,7 @@ class RecipeAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(recipe: Recipe.Result) {
-            Glide.with(itemView).load("https://spoonacular.com/recipeImages/" + recipe.imageUrl).into(itemView.iv_recipe)
+            Glide.with(itemView).load(recipe.imageUrl).into(itemView.iv_recipe)
             itemView.txt_title.text = recipe.title
         }
     }
