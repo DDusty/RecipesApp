@@ -3,7 +3,11 @@ package com.example.recipeapp.ui.home
 import android.os.Bundle
 import android.transition.Slide
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -33,6 +37,15 @@ class HomeFragment : Fragment() {
     var randomRecipe: Recipe.Result? = null
     private lateinit var auth: FirebaseAuth
 
+    /**
+     * set al the viarables of the view, so that it can be used in functions outside oncreateview
+     */
+    private var txt_title: TextView? = null
+    private var txt_time: TextView? = null
+    private var txt_allergies: TextView? = null
+    private var txt_typeDish: TextView? = null
+    private var iv_recipe: ImageView? = null
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -41,6 +54,13 @@ class HomeFragment : Fragment() {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
+
+        // set al the variables to the xml field
+        txt_title = root.txt_title
+        txt_time = root.txt_time
+        txt_allergies = root.txt_allergies
+        txt_typeDish = root.txt_typedish
+        iv_recipe = root.iv_recipe_home
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
@@ -74,10 +94,10 @@ class HomeFragment : Fragment() {
 
         root.setOnTouchListener(object: OnSwipeTouchListener() {
             override fun onSwipeLeft() {
-                clickYes(randomRecipe!!, account!!)
+                clickNo()
             }
             override fun onSwipeRight() {
-                clickNo()
+                clickYes(randomRecipe!!, account!!)
             }
         })
 
@@ -124,9 +144,9 @@ class HomeFragment : Fragment() {
     private fun setView() {
         Glide.with(this)
             .load(randomRecipe!!.imageUrl)
-            .into(this.iv_recipe_home)
-        this.txt_title.text = randomRecipe!!.title
-        this.txt_time.text = randomRecipe!!.readyInMinutes.toString()
+            .into(iv_recipe!!)
+        txt_title!!.text = randomRecipe!!.title
+        txt_time!!.text = randomRecipe!!.readyInMinutes.toString()
 
         var dietString = ""
         for (diet in randomRecipe!!.diets) {
@@ -138,8 +158,8 @@ class HomeFragment : Fragment() {
             typeDishString += "$type, "
         }
 
-        this.txt_allergies.text = dietString
-        this.txt_items.text = randomRecipe!!.healthScore.toString()
-        this.txt_typedish.text = typeDishString
+        txt_allergies!!.text = dietString
+        txt_typeDish!!.text = typeDishString
+
     }
 }

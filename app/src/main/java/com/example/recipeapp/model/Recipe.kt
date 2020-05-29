@@ -14,31 +14,13 @@ data class Recipe(
         @SerializedName("image") var imageUrl: String = "",
         @SerializedName("summary") var summary: String= "",
         @SerializedName("instructions") var intructions: String = "",
-        @SerializedName("analyzedInstructions") var analyzedInstructions: List<AnalyzedInstructions> = listOf(),
-        @SerializedName("ingredient") var missedIngredient: List<MissedIngredient> = listOf(),
+        @SerializedName("extendedIngredients") var Ingredients: List<Ingredient> = listOf(),
         @SerializedName("dishTypes") var dishTypes: List<String> = listOf(),
         @SerializedName("diets") var diets: List<String> = listOf(),
         @SerializedName("healthScore") var healthScore: Double = 0.0
     ) : Serializable {
-        data class MissedIngredient(
-            @SerializedName("original") var original: String = ""
+        data class Ingredient(
+            @SerializedName("original") var name: String = ""
         ) : Serializable
-        data class AnalyzedInstructions(
-            @SerializedName("steps") var steps: List<Step> = listOf()
-        ) : Serializable {
-            data class Step(
-                @SerializedName("number") var stepNumber: Int = 0,
-                @SerializedName("step") var step: String = "",
-                @SerializedName("ingredients") var ingredients: List<Ingredient> = listOf(),
-                @SerializedName("equipment") var equipment: List<Equipment> = listOf()
-            ) : Serializable {
-                data class Ingredient(
-                    @SerializedName("name") var ingredientName: String = ""
-                ) : Serializable
-                data class Equipment(
-                    @SerializedName("name") var equipmentName: String = ""
-                ) : Serializable
-            }
-        }
     }
 }

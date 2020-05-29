@@ -42,7 +42,8 @@ class RecipeAdapter(
         val recipe = recipes[position]
         recipes.removeAt(position)
         notifyItemRemoved(position)
-        
+
+        // removes the recipe from the list
         database.root.child("users").child(id).child("recipeList").child(recipe.id.toString()).setValue(null)
     }
 

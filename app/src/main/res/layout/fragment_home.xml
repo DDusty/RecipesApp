@@ -51,18 +51,18 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:layout_weight="0"
             android:orientation="horizontal"
             android:padding="5dp">
 
             <ImageView
                 android:id="@+id/iv_time"
-                android:layout_width="45dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:scaleType="fitStart"
-                android:src="@drawable/ic_launcher_background" />
+                app:srcCompat="@drawable/ic_time_black_24dp" />
 
             <TextView
                 android:id="@+id/txt_time"
@@ -77,75 +77,52 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="5dp">
 
             <ImageView
                 android:id="@+id/iv_allergies"
-                android:layout_width="45dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:scaleType="fitStart"
-                android:src="@drawable/ic_launcher_background" />
+                app:srcCompat="@drawable/ic_allergies_black_24dp" />
 
             <TextView
                 android:id="@+id/txt_allergies"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:text="TextView"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <ImageView
-                android:id="@+id/iv_items"
-                android:layout_width="45dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:scaleType="fitStart"
-                android:src="@drawable/ic_launcher_background" />
-
-            <TextView
-                android:id="@+id/txt_items"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:minHeight="40dp"
                 android:text="TextView"
                 android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="5dp">
 
             <ImageView
                 android:id="@+id/iv_typedish"
-                android:layout_width="45dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:scaleType="fitStart"
-                android:src="@drawable/ic_launcher_background" />
+                app:srcCompat="@drawable/ic_type_24dp" />
 
             <TextView
                 android:id="@+id/txt_typedish"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
+                android:minHeight="40dp"
                 android:text="TextView"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -153,23 +130,28 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="70dp"
+            android:gravity="bottom|center_horizontal"
             android:orientation="horizontal"
-            android:paddingLeft="25dp"
             android:paddingTop="10dp">
 
             <Button
                 android:id="@+id/btn_no"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="10dp"
                 android:layout_weight="0"
+                android:background="@drawable/rounded_button"
                 android:backgroundTint="#E91E63"
                 android:text="X" />
 
             <Button
                 android:id="@+id/btn_yes"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="0"
+                android:background="@drawable/rounded_button"
                 android:backgroundTint="#4CAF50"
                 android:text="V" />
         </LinearLayout>
