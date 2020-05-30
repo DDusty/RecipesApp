@@ -12,7 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 class BroadCastReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val builder = NotificationCompat.Builder(context!!, "notify")
-            .setSmallIcon(R.drawable.ic_cooking_icon_png_1) // not working well
+            .setSmallIcon(R.drawable.cooking_icon) // not working well
             .setContentTitle("Swipe some recipe's!")
             .setContentText("Add some more recipe's to your list")
             .setPriority(NotificationCompat.PRIORITY_HIGH)

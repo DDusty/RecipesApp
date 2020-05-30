@@ -175,7 +175,6 @@ class MainActivity : AppCompatActivity() {
             notificationChannel.lightColor = Color.CYAN
             notificationManager.createNotificationChannel(notificationChannel)
         }
-
         makeNotification()
     }
 
@@ -187,13 +186,16 @@ class MainActivity : AppCompatActivity() {
             getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         val calendar: Calendar = Calendar.getInstance()
-        calendar.setTimeInMillis(System.currentTimeMillis())
-        calendar.set(Calendar.HOUR_OF_DAY, 21)
-        calendar.set(Calendar.MINUTE, 45)
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.set(Calendar.HOUR_OF_DAY, 15)
+        calendar.set(Calendar.MINUTE, 1)
         calendar.set(Calendar.SECOND, 1)
 
+        // fixes notification every minute bug
+        if (calendar.time.compareTo(Date()) < 0) calendar.add(Calendar.DAY_OF_MONTH, 1)
+
         manager.setRepeating(
-            AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+            AlarmManager.RTC_WAKEUP, calendar.timeInMillis,
             AlarmManager.INTERVAL_DAY, pendingIntent
         )
     }
