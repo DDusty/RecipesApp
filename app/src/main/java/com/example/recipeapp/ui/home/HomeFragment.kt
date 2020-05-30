@@ -59,15 +59,6 @@ class HomeFragment : Fragment() {
             setView()
         }
 
-        root!!.setOnTouchListener(object: OnSwipeTouchListener() {
-            override fun onSwipeLeft() {
-                clickNo()
-            }
-            override fun onSwipeRight() {
-                clickYes(randomRecipe!!, account!!)
-            }
-        })
-
         return root
     }
 
@@ -134,6 +125,15 @@ class HomeFragment : Fragment() {
         root!!.txt_showMore.setOnClickListener {
             showExtraInfo()
         }
+
+        root!!.scrollview.setOnTouchListener(object: OnSwipeTouchListener() {
+            override fun onSwipeLeft() {
+                clickNo()
+            }
+            override fun onSwipeRight() {
+                clickYes(randomRecipe!!, account!!)
+            }
+        })
 
         Glide.with(this)
             .load(randomRecipe!!.imageUrl)
