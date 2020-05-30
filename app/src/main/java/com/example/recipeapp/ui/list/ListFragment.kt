@@ -1,10 +1,9 @@
 package com.example.recipeapp.ui.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.SimpleAdapter
 import android.widget.TextView
 import android.widget.Toast
@@ -15,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.recipeapp.MainActivity
 import com.example.recipeapp.R
 import com.example.recipeapp.SwipeToDeleteCallback
 import com.example.recipeapp.adapter.RecipeAdapter
@@ -22,6 +22,7 @@ import com.example.recipeapp.data.database.DatabaseViewModel
 import com.example.recipeapp.data.database.OnGetDataListener
 import com.example.recipeapp.model.Recipe
 import com.example.recipeapp.model.User
+import com.example.recipeapp.ui.home.HomeFragment
 import com.example.recipeapp.ui.home.recipe.RecipeFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -29,6 +30,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import kotlinx.android.synthetic.main.fragment_list.*
 import kotlinx.android.synthetic.main.fragment_list.view.*
+import kotlinx.coroutines.Dispatchers
 
 class ListFragment : Fragment() {
     private lateinit var databaseViewModel: DatabaseViewModel
@@ -48,6 +50,8 @@ class ListFragment : Fragment() {
             ViewModelProviders.of(this).get(DatabaseViewModel::class.java)
 
         val root = inflater.inflate(R.layout.fragment_list, container, false)
+
+        setHasOptionsMenu(true)
 
         val rvList: RecyclerView = root.findViewById(R.id.rv_list)
 
@@ -71,6 +75,29 @@ class ListFragment : Fragment() {
         if(account != null) loadData(account) else Log.d("listfragment ", "account is null")
 
         return root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.logout, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        // clicked on logout button
+        R.id.logout_menu -> {
+            signOut()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+        Toast.makeText(this.requireContext(), "signed out", Toast.LENGTH_LONG).show()
+
+        // go back to main activity
+        val intent = Intent(activity, MainActivity::class.java)
+        startActivity(intent)
     }
 
     fun loadData(acc: FirebaseUser?) {

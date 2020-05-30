@@ -1,31 +1,31 @@
 package com.example.recipeapp.ui.home
 
+import android.app.ActionBar
+import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.text.Html
-import android.transition.Slide
-import android.transition.TransitionManager
-import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
+import com.example.recipeapp.MainActivity
 import com.example.recipeapp.OnSwipeTouchListener
 import com.example.recipeapp.R
 import com.example.recipeapp.data.database.DatabaseViewModel
 import com.example.recipeapp.model.Recipe
-import com.example.recipeapp.ui.home.recipe.RecipeFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
+import kotlinx.coroutines.Dispatchers.Main
 
 
 /**
@@ -46,7 +46,10 @@ class HomeFragment : Fragment() {
     ): View? {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel::class.java)
+
         val root = inflater.inflate(R.layout.fragment_home, container, false)
+
+        setHasOptionsMenu(true)
 
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
@@ -73,6 +76,29 @@ class HomeFragment : Fragment() {
         })
 
         return root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.logout, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        // clicked on logout button
+        R.id.logout_menu -> {
+            signOut()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+        Toast.makeText(this.requireContext(), "signed out", Toast.LENGTH_LONG).show()
+
+        // go back to main activity
+        val intent = Intent(activity, MainActivity::class.java)
+        startActivity(intent)
     }
 
     private fun clickYes(recipe: Recipe.Result, acc: FirebaseUser) {
@@ -152,7 +178,7 @@ class HomeFragment : Fragment() {
 
         var ingredientsString = ""
         for (ingredient in randomRecipe!!.Ingredients) {
-            ingredientsString += "${ingredient.name} + \n"
+            ingredientsString += "${ingredient.name} \n"
         }
 
         txt_ingredients_home.text = ingredientsString
