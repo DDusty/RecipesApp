@@ -1,18 +1,14 @@
 package com.example.recipeapp.ui.home
 
-import android.app.ActionBar
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
 import android.text.Html
 import android.view.*
-import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.airbnb.lottie.LottieAnimationView
 import com.bumptech.glide.Glide
 import com.example.recipeapp.MainActivity
 import com.example.recipeapp.OnSwipeTouchListener
@@ -23,10 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
-import kotlinx.coroutines.Dispatchers.Main
-
 
 /**
  * This is the controller behind the home screen.
@@ -38,6 +31,7 @@ class HomeFragment : Fragment() {
     private lateinit var database: DatabaseReference
     var randomRecipe: Recipe.Result? = null
     private lateinit var auth: FirebaseAuth
+    private var root: View? = null
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -46,8 +40,7 @@ class HomeFragment : Fragment() {
     ): View? {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel::class.java)
-
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+        root = inflater.inflate(R.layout.fragment_home, container, false)
 
         setHasOptionsMenu(true)
 
@@ -57,8 +50,8 @@ class HomeFragment : Fragment() {
 
         account = auth.currentUser
 
-        root.animation_view_recipe.visibility = View.VISIBLE
-        root.linear_layout.visibility = View.GONE
+        root!!.animation_view_recipe.visibility = View.VISIBLE
+        root!!.linear_layout.visibility = View.GONE
 
         if (randomRecipe == null) {
             getNewRandomRecipe()
@@ -66,7 +59,7 @@ class HomeFragment : Fragment() {
             setView()
         }
 
-        root.setOnTouchListener(object: OnSwipeTouchListener() {
+        root!!.setOnTouchListener(object: OnSwipeTouchListener() {
             override fun onSwipeLeft() {
                 clickNo()
             }
@@ -127,26 +120,26 @@ class HomeFragment : Fragment() {
      * Populates the view
      */
     private fun setView() {
-        animation_view_recipe.visibility = View.GONE
-        linear_layout.visibility = View.VISIBLE
+        root!!.animation_view_recipe.visibility = View.GONE
+        root!!.linear_layout.visibility = View.VISIBLE
 
-        btn_no.setOnClickListener {
+        root!!.btn_no.setOnClickListener {
             clickNo()
         }
 
-        btn_yes.setOnClickListener {
+        root!!.btn_yes.setOnClickListener {
             clickYes(randomRecipe!!, account!!)
         }
 
-        txt_showMore.setOnClickListener {
+        root!!.txt_showMore.setOnClickListener {
             showExtraInfo()
         }
 
         Glide.with(this)
             .load(randomRecipe!!.imageUrl)
-            .into(iv_recipe_home!!)
-        txt_title!!.text = randomRecipe!!.title
-        txt_time!!.text = randomRecipe!!.readyInMinutes.toString()
+            .into(root!!.iv_recipe_home!!)
+        root!!.txt_title!!.text = randomRecipe!!.title
+        root!!.txt_time!!.text = randomRecipe!!.readyInMinutes.toString()
 
         var dietString = ""
         for (diet in randomRecipe!!.diets) {
@@ -158,42 +151,42 @@ class HomeFragment : Fragment() {
             typeDishString += "$type, "
         }
 
-        txt_allergies!!.text = dietString
-        txt_typedish!!.text = typeDishString
+        root!!.txt_allergies!!.text = dietString
+        root!!.txt_typedish!!.text = typeDishString
 
         // sets the underline of the textview
-        txt_showMore.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+        root!!.txt_showMore.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
 
     private fun showExtraInfo() {
-        txt_showMore.visibility = View.GONE
-        extra_info.visibility = View.VISIBLE
+        root!!.txt_showMore.visibility = View.GONE
+        root!!.extra_info.visibility = View.VISIBLE
 
-        txt_showLess.setOnClickListener {
+        root!!.txt_showLess.setOnClickListener {
             showLessInfo()
         }
 
         // sets the underline of the textview
-        txt_showLess.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+        root!!.txt_showLess.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
 
         var ingredientsString = ""
         for (ingredient in randomRecipe!!.Ingredients) {
             ingredientsString += "${ingredient.name} \n"
         }
 
-        txt_ingredients_home.text = ingredientsString
+        root!!.txt_ingredients_home.text = ingredientsString
 
         // makes the textview take html body
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            txt_intructions_home.text = Html.fromHtml(randomRecipe!!.intructions, Html.FROM_HTML_MODE_LEGACY)
+            root!!.txt_intructions_home.text = Html.fromHtml(randomRecipe!!.intructions, Html.FROM_HTML_MODE_LEGACY)
         } else {
-            txt_intructions_home.text = Html.fromHtml(randomRecipe!!.intructions)
+            root!!.txt_intructions_home.text = Html.fromHtml(randomRecipe!!.intructions)
         }
 
     }
 
     private fun showLessInfo() {
-        extra_info.visibility = View.GONE
-        txt_showMore.visibility = View.VISIBLE
+        root!!.extra_info.visibility = View.GONE
+        root!!.txt_showMore.visibility = View.VISIBLE
     }
 }

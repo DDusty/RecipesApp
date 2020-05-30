@@ -1,11 +1,13 @@
 package com.example.recipeapp
 
+import android.app.*
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
@@ -20,7 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -29,12 +31,18 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.login_screen.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private var mGoogleSignInClient: GoogleSignInClient? = null
     private lateinit var database: DatabaseReference
     private lateinit var databaseViewModel: DatabaseViewModel
+    lateinit var notificationManager: NotificationManager
+    lateinit var notificationChannel: NotificationChannel
+    lateinit var builder: Notification.Builder
+    private var channelId = "notify"
+    private var notificationdesc = "test notification"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +52,8 @@ class MainActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance().reference
         databaseViewModel = ViewModelProviders.of(this).get(DatabaseViewModel::class.java)
+
+        createNotificationChannel()
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -150,6 +160,42 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+    }
+
+    private fun createNotificationChannel() {
+        notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationChannel = NotificationChannel(
+                channelId,
+                notificationdesc,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = Color.CYAN
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
+
+        makeNotification()
+    }
+
+    private fun makeNotification() {
+        val intent = Intent(this, BroadCastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0)
+
+        val manager: AlarmManager =
+            getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val calendar: Calendar = Calendar.getInstance()
+        calendar.setTimeInMillis(System.currentTimeMillis())
+        calendar.set(Calendar.HOUR_OF_DAY, 21)
+        calendar.set(Calendar.MINUTE, 45)
+        calendar.set(Calendar.SECOND, 1)
+
+        manager.setRepeating(
+            AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+            AlarmManager.INTERVAL_DAY, pendingIntent
+        )
     }
 
 }
